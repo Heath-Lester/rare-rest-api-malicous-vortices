@@ -1,0 +1,72 @@
+[
+    {
+        "model": "rareapi.category",
+        "pk": 1,
+        "fields": {
+            "label": "C"
+        }
+    },
+    {
+        "model": "rareapi.category",
+        "pk": 2,
+        "fields": {
+            "label": "C#"
+        }
+    },
+    {
+        "model": "rareapi.category",
+        "pk": 3,
+        "fields": {
+            "label": "C++"
+        }
+    },
+    {
+        "model": "rareapi.category",
+        "pk": 4,
+        "fields": {
+            "label": "Elixir"
+        }
+    },
+    {
+        "model": "rareapi.category",
+        "pk": 5,
+        "fields": {
+            "label": "Python"
+        }
+    },
+    {
+        "model": "rareapi.category",
+        "pk": 6,
+        "fields": {
+            "label": "Haskell"
+        }
+    },
+    {
+        "model": "rareapi.category",
+        "pk": 7,
+        "fields": {
+            "label": "Perl"
+        }
+    },
+    {
+        "model": "rareapi.category",
+        "pk": 8,
+        "fields": {
+            "label": "Ruby"
+        }
+    },
+    {
+        "model": "rareapi.category",
+        "pk": 9,
+        "fields": {
+            "label": "Go"
+        }
+    },
+    {
+        "model": "rareapi.category",
+        "pk": 10,
+        "fields": {
+            "label": "Rust"
+        }
+    }
+]

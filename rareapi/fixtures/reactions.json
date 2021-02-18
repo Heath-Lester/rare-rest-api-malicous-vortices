@@ -1,0 +1,42 @@
+[
+    {
+        "model": "rareapi.reaction",
+        "pk": 1,
+        "fields": {
+            "label": "Happy",
+            "image_url": "https://unsplash.com/photos/SymZoeE8quA"
+        }
+    },
+    {
+        "model": "rareapi.reaction",
+        "pk": 2,
+        "fields": {
+            "label": "Content",
+            "image_url": "https://unsplash.com/photos/SymZoeE8quA"
+        }
+    },
+    {
+        "model": "rareapi.reaction",
+        "pk": 3,
+        "fields": {
+            "label": "Depressed",
+            "image_url": "https://unsplash.com/photos/SymZoeE8quA"
+        }
+    },
+    {
+        "model": "rareapi.reaction",
+        "pk": 4,
+        "fields": {
+            "label": "Frustrated",
+            "image_url": "https://unsplash.com/photos/SymZoeE8quA"
+        }
+    },
+    {
+        "model": "rareapi.reaction",
+        "pk": 5,
+        "fields": {
+            "label": "Curious",
+            "image_url": "https://unsplash.com/photos/SymZoeE8quA"
+        }
+    }
+]
