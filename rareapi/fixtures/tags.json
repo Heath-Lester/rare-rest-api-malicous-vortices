@@ -1,0 +1,30 @@
+[
+    {
+        "model": "rareapi.Tag",
+        "pk": 1,
+        "fields": {
+            "label": "Bitcoin"
+        }
+    },
+    {
+        "model": "rareapi.Tag",
+        "pk": 2,
+        "fields": {
+            "label": "Music"
+        }
+    },
+    {
+        "model": "rareapi.Tag",
+        "pk": 2,
+        "fields": {
+            "label": "Software"
+        }
+    },
+    {
+        "model": "rareapi.Tag",
+        "pk": 2,
+        "fields": {
+            "label": "MONEY"
+        }
+    }
+]
