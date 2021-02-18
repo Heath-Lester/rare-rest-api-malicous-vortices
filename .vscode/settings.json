@@ -6,5 +6,6 @@
             "name": "rare",
             "database": "db.sqlite3"
         }
-    ]
+    ],
+    "python.pythonPath": "/Users/travis/.local/share/virtualenvs/server-dkIVrlcH/bin/python"
 }
