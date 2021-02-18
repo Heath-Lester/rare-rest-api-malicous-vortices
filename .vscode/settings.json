@@ -1,3 +1,11 @@
 {
-    "python.pythonPath": "/home/dillon/.local/share/virtualenvs/malicious-vortices-UEngEG_J/bin/python"
+    "python.pythonPath": "/home/dillon/.local/share/virtualenvs/malicious-vortices-UEngEG_J/bin/python",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "rare.db",
+            "database": "db.sqlite3"
+        }
+    ]
 }
