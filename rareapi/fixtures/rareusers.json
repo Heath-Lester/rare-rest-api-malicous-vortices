@@ -1,0 +1,24 @@
+[
+    {
+        "model": "rareapi.RareUser",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "bio": "Me",
+            "profile_image_url":"",
+            "created_on":"2020-08-28T14:51:39.989Z",
+            "active":true
+        }
+    },
+    {
+        "model": "rareapi.RareUser",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "bio": "Its me",
+            "profile_image_url":"",
+            "created_on":"2020-08-28T14:51:39.989Z",
+            "active":true
+        }
+    }
+]
