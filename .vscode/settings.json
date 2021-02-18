@@ -1,5 +1,4 @@
 {
-    "python.pythonPath": "/home/dillon/.local/share/virtualenvs/malicious-vortices-UEngEG_J/bin/python",
     "sqltools.connections": [
         {
             "previewLimit": 50,
