@@ -151,6 +151,10 @@ dmypy.json
 
 # profiling data
 .prof
+#misc
+settings.json
+.vscode
+
 
 # misc
 settings.json
