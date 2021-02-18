@@ -1,3 +1,12 @@
 {
-    "python.pythonPath": "/home/dillon/.local/share/virtualenvs/malicious-vortices-UEngEG_J/bin/python"
+    "python.pythonPath": "/Users/travis/.local/share/virtualenvs/server-dkIVrlcH/bin/python",
+    "python.linting.pylintEnabled": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "db.sqlite3",
+            "name": "database"
+        }
+    ]
 }
