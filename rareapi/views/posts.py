@@ -132,6 +132,12 @@ class Posts(ViewSet):
         category = self.request.query_params.get('category', None)
         if category is not None:
             posts = posts.filter(category__id=category)
+            
+        user = RareUser.objects.get(user=request.auth.user)
+        active = self.request.query_params.get('active', None)
+
+        if active is not None:
+            posts = posts.filter(user__id=user.id)
 
         user = self.request.query_params.get('user', None)
         if user is not None:
@@ -151,4 +157,3 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'category', 'title', 'publication_date',
                   'image_url', 'content', 'approved')
         depth = 2
-
