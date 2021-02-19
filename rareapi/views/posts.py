@@ -135,15 +135,11 @@ class Posts(ViewSet):
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
         return Response(serializer.data)
-
+    @actions(methods=['posts','delete'])
 
 class PostSerializer(serializers.ModelSerializer):
-    """JSON serializer for Posts
-    Arguments:
-        serializer type
-    """
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
-                  'image_url', 'content', 'approved')
-        depth = 1
+                  'image_url', 'content', 'approved', )
+        # depth = 1

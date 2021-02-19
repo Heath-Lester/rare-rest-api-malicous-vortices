@@ -9,3 +9,11 @@ class Post(models.Model):
     image_url = models.CharField(max_length=200)
     content = models.CharField(max_length=250)
     approved = models.BooleanField()
+
+    @property
+    def related_tags(self):
+        return self.__related_tags
+
+    @related_tags.setter
+    def related_tags(self, value):
+        self.__related_tags = value
