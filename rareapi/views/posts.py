@@ -128,9 +128,15 @@ class Posts(ViewSet):
         #    http://localhost:8000/Posts?type=1
         #
         # That URL will retrieve all tabletop Posts
-        category = self.request.query_params.get('type', None)
+        category = self.request.query_params.get('category', None)
         if category is not None:
             posts = posts.filter(category__id=category)
+            
+        user = RareUser.objects.get(user=request.auth.user)
+        active = self.request.query_params.get('active', None)
+
+        if active is not None:
+            posts = posts.filter(user__id=user.id)
 
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
@@ -146,4 +152,4 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
                   'image_url', 'content', 'approved')
-        depth = 1
+        depth = 2
