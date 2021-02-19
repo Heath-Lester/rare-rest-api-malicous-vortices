@@ -137,17 +137,46 @@ class Posts(ViewSet):
         return Response(serializer.data)
     @action(methods=[ 'post', 'delete'], detail=True)
     def addtag(self, request, pk=None):
-        """Managing gamers signing up for events"""
-        # A gamer wants to sign up for an event
 
         if request.method=="POST":
+            
             post=Post.objects.get(pk=request.data["post_id"])
             tag=Tag.objects.get(pk=request.data["tag_id"])
-            post_tag=PostTag()
-            post_tag.post=post
-            post_tag.tag=tag
-            post_tag.save()
-            return Response({}, status=status.HTTP_201_CREATED)
+            try:
+                # Determine if the user is already signed up
+                post_tag = PostTag.objects.get(post=post, tag=tag)
+                return Response(
+                    {'message': 'this tag is on the post.'},
+                    status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+            except PostTag.DoesNotExist:    
+                post_tag=PostTag()
+                post_tag.post=post
+                post_tag.tag=tag
+                post_tag.save()
+                return Response({}, status=status.HTTP_201_CREATED)
+
+        elif request.method=="DELETE":
+            try:
+                post=Post.objects.get(pk=pk)
+            except Post.DoesNotExist:
+                return Response(
+                    {'message': 'Post does not exist.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            user = RareUser.objects.get(user=request.auth.user)
+            try:
+                post_tag = PostTag.objects.get(post=post, tag=tag)
+                post_tag.delete()
+                return Response(None, status=status.HTTP_204_NO_CONTENT)
+            except PostTag.DoesNotExist:
+                return Response(
+                    {'message': 'tag is not on the post'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        return Response({}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
