@@ -6,7 +6,7 @@
             "user": 1,
             "category": 1,
             "title": "New Title",
-            "publication_date": "2020-08-29T13:24:27.172Z",
+            "publication_date": "2006-10-25 14:30:59",
             "image_url": "https://www.google.com/imgres?imgurl=https%3A%2F%2Fimages.ctfassets.net%2Fhrltx12pl8hq%2F4f6DfV5DbqaQUSw0uo0mWi%2Fff068ff5fc855601751499d694c0111a%2Fshutterstock_376532611.jpg%3Ffit%3Dfill%26w%3D800%26h%3D300&imgrefurl=https%3A%2F%2Fwww.shutterstock.com%2Fexplore%2Froyalty-free-images&tbnid=gKBe0L4HZ4kG_M&vet=12ahUKEwj68saUrfTuAhULn1MKHVZLA4UQMygEegUIARDcAQ..i&docid=i_uVXr6tfXrccM&w=800&h=300&q=image%20free&ved=2ahUKEwj68saUrfTuAhULn1MKHVZLA4UQMygEegUIARDcAQ",
             "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
             "approved": false
@@ -19,7 +19,7 @@
             "user": 1,
             "category": 1,
             "title": "Newer Title",
-            "publication_date": "2020-08-29T13:24:27.172Z",
+            "publication_date": "2006-10-25 14:30:59",
             "image_url": "https://www.google.com/imgres?imgurl=https%3A%2F%2Fimages.ctfassets.net%2Fhrltx12pl8hq%2F4f6DfV5DbqaQUSw0uo0mWi%2Fff068ff5fc855601751499d694c0111a%2Fshutterstock_376532611.jpg%3Ffit%3Dfill%26w%3D800%26h%3D300&imgrefurl=https%3A%2F%2Fwww.shutterstock.com%2Fexplore%2Froyalty-free-images&tbnid=gKBe0L4HZ4kG_M&vet=12ahUKEwj68saUrfTuAhULn1MKHVZLA4UQMygEegUIARDcAQ..i&docid=i_uVXr6tfXrccM&w=800&h=300&q=image%20free&ved=2ahUKEwj68saUrfTuAhULn1MKHVZLA4UQMygEegUIARDcAQ",
             "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
             "approved": false
