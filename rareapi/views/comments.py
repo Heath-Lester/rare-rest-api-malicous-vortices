@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from rareapi.models import Comment, RareUser, Post
-from datetime import datetime
+from datetime import date
 
 class Comments(ViewSet):
     def list(self, request):
@@ -15,8 +15,7 @@ class Comments(ViewSet):
         return Response(serializer.data)
     
     def create(self, request):
-        print("hello")
-        print("dude")
+       
         author= RareUser.objects.get(user=request.auth.user)
         post=Post.objects.get(pk=request.data["postId"])
 
@@ -25,8 +24,7 @@ class Comments(ViewSet):
         comment.post=post
         comment.author=author
         comment.content=request.data["content"]
-        comment.created_on= datetime.now
-        print("hi")
+        comment.created_on= date.today()
 
         try:
             comment.save()
