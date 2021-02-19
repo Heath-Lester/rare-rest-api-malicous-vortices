@@ -164,8 +164,10 @@ class Posts(ViewSet):
                     {'message': 'Post does not exist.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            user = RareUser.objects.get(user=request.auth.user)
+            # user = RareUser.objects.get(user=request.auth.user)
             try:
+                post=Post.objects.get(pk=request.data["post_id"])
+                tag=Tag.objects.get(pk=request.data["tag_id"])
                 post_tag = PostTag.objects.get(post=post, tag=tag)
                 post_tag.delete()
                 return Response(None, status=status.HTTP_204_NO_CONTENT)
