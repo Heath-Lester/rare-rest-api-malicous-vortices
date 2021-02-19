@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework import routers
 from rareapi.views import Tags, Comments
+from rareapi.views import Posts
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'tags', Tags, 'tag')
+router.register(r'posts', Posts, 'post')
 router.register(r'comments', Comments, 'comment')
 
 
