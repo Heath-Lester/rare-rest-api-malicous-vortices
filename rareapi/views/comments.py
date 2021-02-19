@@ -11,22 +11,28 @@ from datetime import datetime
 class Comments(ViewSet):
     def list(self, request):
         comments=Comment.objects.all()
-        serializers=CommentSerializer(comments, many=True, context= {'request': request})
+        serializer = CommentSerializer(comments, many=True, context= {'request': request})
         return Response(serializer.data)
     
     def create(self, request):
+        print("hello")
+        print("dude")
         author= RareUser.objects.get(user=request.auth.user)
         post=Post.objects.get(pk=request.data["postId"])
-        comment=Comments()
+
+
+        comment=Comment()
         comment.post=post
         comment.author=author
         comment.content=request.data["content"]
         comment.created_on= datetime.now
+        print("hi")
 
         try:
             comment.save()
             serializer=CommentSerializer(comment, context= {'request': request} )
             return Response(serializer.data)
+
         except ValidationError as ex:
             return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -35,4 +41,4 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model=Comment
         fields=('id','post', 'author', 'content', 'created_on')
-        depth=1
+        # depth=1
