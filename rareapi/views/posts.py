@@ -135,6 +135,8 @@ class Posts(ViewSet):
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
         return Response(serializer.data)
+
+
     @action(methods=[ 'post', 'delete'], detail=True)
     def addtag(self, request, pk=None):
 
@@ -143,7 +145,6 @@ class Posts(ViewSet):
             post=Post.objects.get(pk=request.data["post_id"])
             tag=Tag.objects.get(pk=request.data["tag_id"])
             try:
-                # Determine if the user is already signed up
                 post_tag = PostTag.objects.get(post=post, tag=tag)
                 return Response(
                     {'message': 'this tag is on the post.'},
@@ -182,5 +183,5 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
-                  'image_url', 'content', 'approved', )
+                  'image_url', 'content', 'approved',"related_tag" )
         # depth = 1
