@@ -128,9 +128,13 @@ class Posts(ViewSet):
         #    http://localhost:8000/Posts?type=1
         #
         # That URL will retrieve all tabletop Posts
-        category = self.request.query_params.get('type', None)
+        category = self.request.query_params.get('category', None)
         if category is not None:
             posts = posts.filter(category__id=category)
+
+        user = self.request.query_params.get('user', None)
+        if user is not None:
+            posts = posts.filter(user__id=user)
 
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
