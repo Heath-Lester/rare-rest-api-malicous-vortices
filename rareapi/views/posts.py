@@ -6,8 +6,8 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-from rareapi.models import Post, RareUser, Category
-
+from rareapi.models import Post, RareUser, Category, Tag, PostTag
+from rest_framework.decorators import action
 
 class Posts(ViewSet):
     """Posts"""
@@ -135,7 +135,19 @@ class Posts(ViewSet):
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
         return Response(serializer.data)
-    @actions(methods=['posts','delete'])
+    @action(methods=[ 'post', 'delete'], detail=True)
+    def addtag(self, request, pk=None):
+        """Managing gamers signing up for events"""
+        # A gamer wants to sign up for an event
+
+        if request.method=="POST":
+            post=Post.objects.get(pk=request.data["post_id"])
+            tag=Tag.objects.get(pk=request.data["tag_id"])
+            post_tag=PostTag()
+            post_tag.post=post
+            post_tag.tag=tag
+            post_tag.save()
+            return Response({}, status=status.HTTP_201_CREATED)
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
