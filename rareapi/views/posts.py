@@ -6,7 +6,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-from levelupapi.models import Post, RareUser, Category
+from rareapi.models import Post, RareUser, Category
 
 
 class Posts(ViewSet):
@@ -79,7 +79,7 @@ class Posts(ViewSet):
         # Do mostly the same thing as POST, but instead of
         # creating a new instance of Post, get the Post record
         # from the database whose primary key is `pk`
-        post = Post()
+        post = Post.objects.get(pk=pk)
         post.user = user
         post.title = request.data["title"]
         post.publication_date = request.data["publicationDate"]
