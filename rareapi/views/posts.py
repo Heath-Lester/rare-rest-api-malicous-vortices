@@ -64,7 +64,14 @@ class Posts(ViewSet):
             #
             # The `2` at the end of the route becomes `pk`
             post = Post.objects.get(pk=pk)
+            associated_tags=Tag.objects.filter(related_post__post=post)
+            print(associated_tags)
+
+            all_tags=serializers=TagSerializer(associated_tags, many=True, context={'request',request})
             serializer = PostSerializer(post, context={'request': request})
+
+            # post['all_tags']=all_tags.data
+
             return Response(serializer.data)
         except Exception as ex:
             return HttpResponseServerError(ex)
@@ -123,11 +130,13 @@ class Posts(ViewSet):
         """
         # Get all Post records from the database
         posts = Post.objects.all()
+        
 
         # Support filtering Posts by type
         #    http://localhost:8000/Posts?type=1
         #
         # That URL will retrieve all tabletop Posts
+
         category = self.request.query_params.get('category', None)
         if category is not None:
             posts = posts.filter(category__id=category)
@@ -146,7 +155,7 @@ class Posts(ViewSet):
 
         if request.method=="POST":
             
-            post=Post.objects.get(pk=request.data["post_id"])
+            post=Post.objects.get(pk=pk)
             tag=Tag.objects.get(pk=request.data["tag_id"])
             try:
                 post_tag = PostTag.objects.get(post=post, tag=tag)
@@ -163,6 +172,7 @@ class Posts(ViewSet):
         elif request.method=="DELETE":
             try:
                 post=Post.objects.get(pk=pk)
+
             except Post.DoesNotExist:
                 return Response(
                     {'message': 'Post does not exist.'},
@@ -170,9 +180,12 @@ class Posts(ViewSet):
                 )
             # user = RareUser.objects.get(user=request.auth.user)
             try:
-                post=Post.objects.get(pk=request.data["post_id"])
+                post=Post.objects.get(pk=pk)
+                
                 tag=Tag.objects.get(pk=request.data["tag_id"])
+                
                 post_tag = PostTag.objects.get(post=post, tag=tag)
+                
                 post_tag.delete()
                 return Response(None, status=status.HTTP_204_NO_CONTENT)
             except PostTag.DoesNotExist:
@@ -183,11 +196,15 @@ class Posts(ViewSet):
         return Response({}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
+class TagSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Tag
+        fields = ( 'id', 'label' )
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
-                  'image_url', 'content', 'approved',"related_tag" )
-        # depth = 1
+                  'image_url', 'content', 'approved',"related_post" )
+        depth = 1
