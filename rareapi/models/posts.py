@@ -11,9 +11,9 @@ class Post(models.Model):
     approved = models.BooleanField()
 
     @property
-    def reaction_count(self):
-        return self.__reaction_count
+    def related_tags(self):
+        return self.__related_tags
 
-    @reaction_count.setter
-    def reaction_count(self, value):
-        self.__reaction_count = value
+    @related_tags.setter
+    def related_tags(self, value):
+        self.__related_tags = value
