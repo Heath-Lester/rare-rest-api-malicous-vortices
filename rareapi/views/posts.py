@@ -7,14 +7,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-<<<<<<< HEAD
-from rareapi.models import Post, RareUser, Category, Tag, PostTag
+from rareapi.models import Post, RareUser, Category, Tag, PostTag, PostReaction, Reaction
 from rest_framework.decorators import action
-=======
-from rareapi.models import Post, RareUser, Category, PostReaction, Reaction
 from datetime import date
 
->>>>>>> main
 
 class Posts(ViewSet):
     """Posts"""
