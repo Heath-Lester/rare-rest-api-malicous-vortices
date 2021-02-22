@@ -1,1 +1,0 @@
-DELETE From rareapi_posttag WHERE id=3
