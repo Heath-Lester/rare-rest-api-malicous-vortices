@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from rest_framework import status
 from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
@@ -131,6 +132,12 @@ class Posts(ViewSet):
         category = self.request.query_params.get('category', None)
         if category is not None:
             posts = posts.filter(category__id=category)
+            
+        user = RareUser.objects.get(user=request.auth.user)
+        active = self.request.query_params.get('active', None)
+
+        if active is not None:
+            posts = posts.filter(user__id=user.id)
 
         user = self.request.query_params.get('user', None)
         if user is not None:
@@ -139,7 +146,6 @@ class Posts(ViewSet):
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
         return Response(serializer.data)
-
 
 class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for Posts
@@ -150,4 +156,4 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
                   'image_url', 'content', 'approved')
-        depth = 1
+        depth = 2
