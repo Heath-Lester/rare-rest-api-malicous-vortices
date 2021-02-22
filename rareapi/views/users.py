@@ -21,11 +21,14 @@ class Users(ViewSet):
         Returns:
             Response -- JSON serialized User instance
         """
-        
+        if pk == None:
+            rare_user = RareUser.objects.get(user=request.auth.user)
 
-        rare_user = RareUser.objects.get(pk=pk)
+        else:
+            rare_user = RareUser.objects.get(pk=pk)
 
-        serializer = RareUserSerializer(rare_user, context={'request': request})
+        serializer = RareUserSerializer(
+            rare_user, context={'request': request})
         return Response(serializer.data)
 
     def update(self, request, pk=None):
@@ -33,7 +36,7 @@ class Users(ViewSet):
         Returns:
             Response -- Empty body with 204 status code
         """
-    
+
     def patch(self, request, pk=None):
         """Handle PATCH requests for a User
         Returns:
@@ -82,17 +85,18 @@ class Users(ViewSet):
             if author == follower:
                 return Response({'message': 'User cannot subscribe to themselves'}, status=status.HTTP_400_BAD_REQUEST)
             try:
-                subscription = Subscription.objects.get(author=author, follower=follower)
+                subscription = Subscription.objects.get(
+                    author=author, follower=follower)
                 if subscription.ended_on:
                     subscription.created_on = datetime.now()
                     subscription.ended_on = None
                     subscription.save()
-                    return Response({'message' : 'Subscription Renewed'}, status=status.HTTP_204_NO_CONTENT)
+                    return Response({'message': 'Subscription Renewed'}, status=status.HTTP_204_NO_CONTENT)
                 else:
                     subscription.ended_on = datetime.now()
                     subscription.save()
-                    return Response({'message' : 'Subscription Ended'}, status=status.HTTP_204_NO_CONTENT)
-            except Subscription.DoesNotExist: 
+                    return Response({'message': 'Subscription Ended'}, status=status.HTTP_204_NO_CONTENT)
+            except Subscription.DoesNotExist:
                 subscription = Subscription()
                 subscription.author = author
                 subscription.follower = follower
@@ -127,7 +131,8 @@ class UserSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'is_staff')
+        fields = ('id', 'first_name', 'last_name', 'is_staff', 'username')
+
 
 class SubscriptionSerializer(serializers.ModelSerializer):
 
