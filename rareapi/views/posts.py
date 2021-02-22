@@ -7,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-from rareapi.models import Post, RareUser, Category
+from rareapi.models import Post, RareUser, Category, PostReaction, Reaction
 
 
 class Posts(ViewSet):
@@ -65,6 +65,13 @@ class Posts(ViewSet):
             #
             # The `2` at the end of the route becomes `pk`
             post = Post.objects.get(pk=pk)
+            reactions = Reaction.objects.all()
+            post.reaction_count=[]
+
+            for reaction in reactions:
+                number_of_reactions = PostReaction.objects.filter(post=post, reaction=reaction).count()
+                post.reaction_count.append({reaction.label: number_of_reactions})
+
             serializer = PostSerializer(post, context={'request': request})
             return Response(serializer.data)
         except Exception as ex:
@@ -155,5 +162,5 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
-                  'image_url', 'content', 'approved')
+                  'image_url', 'content', 'approved', 'reaction_count')
         depth = 2
