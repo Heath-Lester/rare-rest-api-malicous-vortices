@@ -159,6 +159,10 @@ class Posts(ViewSet):
         if user is not None:
             posts = posts.filter(user__id=user)
 
+        title = self.request.query_params.get('title', None)
+        if title is not None:
+            posts = posts.filter(title in title)
+
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
         return Response(serializer.data)
