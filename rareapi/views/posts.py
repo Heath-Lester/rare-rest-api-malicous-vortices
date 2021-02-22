@@ -161,7 +161,7 @@ class Posts(ViewSet):
 
         title = self.request.query_params.get('title', None)
         if title is not None:
-            posts = posts.filter(title in title)
+            posts = posts.filter(title__contains=title)
 
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
