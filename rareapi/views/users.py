@@ -1,3 +1,4 @@
+from rareapi.models.subscriptions import Subscription
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from django.http import HttpResponseServerError
@@ -8,6 +9,7 @@ from rest_framework import serializers
 from rest_framework import status
 from rareapi.models import Post, RareUser, Category, PostReaction, Reaction
 from datetime import date
+from datetime import datetime
 from django.contrib.auth.models import User
 
 
@@ -20,6 +22,11 @@ class Users(ViewSet):
             Response -- JSON serialized User instance
         """
         
+
+        rare_user = RareUser.objects.get(pk=pk)
+
+        serializer = RareUserSerializer(rare_user, context={'request': request})
+        return Response(serializer.data)
 
     def update(self, request, pk=None):
         """Handle PUT requests for a User
@@ -66,6 +73,33 @@ class Users(ViewSet):
             #
             # That URL will retrieve all tabletop Users
 
+    @action(methods=['post'], detail=True)
+    def subscribe(self, request, pk=None):
+
+        if request.method == "POST":
+            author = RareUser.objects.get(pk=pk)
+            follower = RareUser.objects.get(user=request.auth.user)
+            if author == follower:
+                return Response({'message': 'User cannot subscribe to themselves'}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                subscription = Subscription.objects.get(author=author, follower=follower)
+                if subscription.ended_on:
+                    subscription.created_on = datetime.now()
+                    subscription.ended_on = None
+                    subscription.save()
+                    return Response({'message' : 'Subscription Renewed'}, status=status.HTTP_204_NO_CONTENT)
+                else:
+                    subscription.ended_on = datetime.now()
+                    subscription.save()
+                    return Response({'message' : 'Subscription Ended'}, status=status.HTTP_204_NO_CONTENT)
+            except Subscription.DoesNotExist: 
+                subscription = Subscription()
+                subscription.author = author
+                subscription.follower = follower
+                subscription.created_on = datetime.now()
+                subscription.save()
+
+                return Response({}, status=status.HTTP_201_CREATED)
 
 class UserSerializer(serializers.ModelSerializer):
     """JSON serializer for Users
@@ -76,6 +110,13 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'first_name', 'last_name', 'is_staff')
 
+class SubscriptionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Subscription
+        fields = ('author', 'created_on', 'ended_on')
+        depth = 1
+
 
 class RareUserSerializer(serializers.ModelSerializer):
     """JSON serializer for RareUsers
@@ -83,8 +124,9 @@ class RareUserSerializer(serializers.ModelSerializer):
         serializer type
     """
     user = UserSerializer(many=False)
+    subscriptions = SubscriptionSerializer(many=True)
 
     class Meta:
         model = RareUser
-        fields = ('id', 'user', 'bio', 'active')
+        fields = ('id', 'user', 'bio', 'active', 'subscriptions')
         depth = 1
