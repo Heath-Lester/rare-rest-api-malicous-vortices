@@ -29,8 +29,17 @@ def login_user(request):
         # If authentication was successful, respond with their token
         if authenticated_user is not None:
             token = Token.objects.get(user=authenticated_user)
-            data = json.dumps({"valid": True, "token": token.key})
+
+            if authenticated_user.is_staff:
+                data = json.dumps(
+                    {"valid": True, "token": token.key, "is_staff": True})
+
+            else:
+                data = json.dumps(
+                    {"valid": True, "token": token.key, "is_staff": False})
+
             return HttpResponse(data, content_type='application/json')
+
 
 @csrf_exempt
 def register_user(request):
@@ -54,15 +63,15 @@ def register_user(request):
         email=req_body['email'],
         is_staff=False,
         is_active=True,
-        date_joined= datetime.now()
+        date_joined=datetime.now()
     )
-    
+
     # Now save the extra info in the rareapi_rareuser table
     rare_user = RareUser.objects.create(
         user=new_user,
         bio=req_body['bio'],
         profile_image_url="",
-        created_on= datetime.now(),
+        created_on=datetime.now(),
         active=req_body['active']
     )
 
