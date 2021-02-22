@@ -101,6 +101,25 @@ class Users(ViewSet):
 
                 return Response({}, status=status.HTTP_201_CREATED)
 
+    @action(methods=['post'], detail=True)
+    def admin(self, request, pk=None):
+        
+        if request.method == "POST":
+            if request.auth.user.is_staff:
+                rare_user_target = RareUser.objects.get(pk=pk)
+                if rare_user_target.user.is_staff:
+                    target_user=rare_user_target.user
+                    target_user.is_staff = False
+                    target_user.save()
+                    return Response({'message' : 'Admin rights revoked'}, status=status.HTTP_204_NO_CONTENT)
+                else:
+                    target_user=rare_user_target.user
+                    target_user.is_staff = True
+                    target_user.save()
+                    return Response({'message' : 'New admin approved'}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({'message' : 'Non-admins may not change user privileges'}, status=status.HTTP_401_UNAUTHORIZED)
+
 class UserSerializer(serializers.ModelSerializer):
     """JSON serializer for Users
     Arguments:
