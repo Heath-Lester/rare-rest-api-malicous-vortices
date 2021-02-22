@@ -7,7 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-from rareapi.models import Post, RareUser, Category, PostReaction, Reaction
+from rareapi.models import Post, RareUser, Category, Tag, PostTag, PostReaction, Reaction
+from rest_framework.decorators import action
 from datetime import date
 
 
@@ -70,19 +71,18 @@ class Posts(ViewSet):
             #
             # The `2` at the end of the route becomes `pk`
             post = Post.objects.get(pk=pk)
-            # Gets all reactions and initializes an empty array
-            reactions = Reaction.objects.all()
-            post.reaction_count=[]
+            associated_tags=Tag.objects.filter(related_post__post=post)
+            print(associated_tags)
 
-
-            # Loops over queryset of all reactions, and for each one counts how PostReactions exist that correspond both to that post and that reaction.
-            # Then appends the result of that to the reaction_count list as a dictionary with key=reaction.label and value = number_of_reactions 
-            for reaction in reactions:
-                number_of_reactions = PostReaction.objects.filter(post=post, reaction=reaction).count()
-                post.reaction_count.append({reaction.label: number_of_reactions})
-
-            serializer = PostSerializer(post, context={'request': request})
-            return Response(serializer.data)
+            all_tags=serializer=TagSerializer(associated_tags, many=True, context={'request',request})
+            my_post=serializer = PostSerializer(post, context={'request': request})
+            
+            single_post={}
+            single_post['post']=my_post.data
+            single_post['tags']=all_tags.data
+            # post['all_tags']=all_tags.data
+            print(single_post)
+            return Response(single_post)
         except Exception as ex:
             return HttpResponseServerError(ex)
 
@@ -140,11 +140,13 @@ class Posts(ViewSet):
         """
         # Get all Post records from the database
         posts = Post.objects.all()
+        
 
         # Support filtering Posts by type
         #    http://localhost:8000/Posts?type=1
         #
         # That URL will retrieve all tabletop Posts
+
         category = self.request.query_params.get('category', None)
         if category is not None:
             posts = posts.filter(category__id=category)
@@ -159,41 +161,70 @@ class Posts(ViewSet):
         if user is not None:
             posts = posts.filter(user__id=user)
 
+        title = self.request.query_params.get('title', None)
+        if title is not None:
+            posts = posts.filter(title__contains=title)
+
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
         return Response(serializer.data)
 
 
-    @action(methods=['post'], detail=True)
-    def approve(self, request, pk=None):
+    @action(methods=[ 'post', 'delete'], detail=True)
+    def addtag(self, request, pk=None):
 
-        if request.method == "POST":
-            post = Post.objects.get(pk=pk)
-            rare_user = RareUser.objects.get(user=request.auth.user)
-            if rare_user.user.is_staff:
-                if post.approved == False:
-                    post.approved = True
-                    post.save()
-                elif post.approved == True:
-                    post.approved = False
-                    post.save()
+        if request.method=="POST":
+            
+            post=Post.objects.get(pk=pk)
+            tag=Tag.objects.get(pk=request.data["tag_id"])
+            try:
+                post_tag = PostTag.objects.get(post=post, tag=tag)
                 return Response(
-                    {'message': 'Successfully approved/unapproved'},
-                    status=status.HTTP_200_OK
-                    )
-            else:
+                    {'message': 'this tag is on the post.'},
+                    status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+            except PostTag.DoesNotExist:    
+                post_tag=PostTag()
+                post_tag.post=post
+                post_tag.tag=tag
+                post_tag.save()
+                return Response({}, status=status.HTTP_201_CREATED)
+
+        elif request.method=="DELETE":
+            try:
+                post=Post.objects.get(pk=pk)
+
+            except Post.DoesNotExist:
                 return Response(
-                    {'message': 'Cannot approve request; user is not admin' },
-                    status=status.HTTP_401_UNAUTHORIZED
+                    {'message': 'Post does not exist.'},
+                    status=status.HTTP_400_BAD_REQUEST
                 )
+            # user = RareUser.objects.get(user=request.auth.user)
+            try:
+                post=Post.objects.get(pk=pk)
+                
+                tag=Tag.objects.get(pk=request.data["tag_id"])
+                
+                post_tag = PostTag.objects.get(post=post, tag=tag)
+                
+                post_tag.delete()
+                return Response(None, status=status.HTTP_204_NO_CONTENT)
+            except PostTag.DoesNotExist:
+                return Response(
+                    {'message': 'tag is not on the post'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        return Response({}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class TagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Tag
+        fields = ( 'id', 'label' )
 
 class PostSerializer(serializers.ModelSerializer):
-    """JSON serializer for Posts
-    Arguments:
-        serializer type
-    """
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
-                  'image_url', 'content', 'approved', 'reaction_count')
-        depth = 2
+                  'image_url', 'content', 'approved',"related_post" )
+        depth = 1
