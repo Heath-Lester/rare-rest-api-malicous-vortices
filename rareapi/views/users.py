@@ -49,6 +49,17 @@ class Users(ViewSet):
             Response -- Empty body with 204 status code
         """
 
+    def patch(self, request, pk=None):
+        """Handle PATCH requests for a User
+        Returns:
+            Response -- Empty body with 204 status code
+        """
+        user = RareUser.objects.get(pk=pk)
+        user.active = request.data['active']
+        user.save()
+
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
+
     def destroy(self, request, pk=None):
         """Handle DELETE requests for a single User
         Returns:
