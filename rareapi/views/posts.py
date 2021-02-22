@@ -3,11 +3,18 @@ from django.core.exceptions import ValidationError
 from rest_framework import status
 from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
+<<<<<<< HEAD
 from rareapi.models import Post, RareUser, Category, Tag, PostTag
 from rest_framework.decorators import action
+=======
+from rareapi.models import Post, RareUser, Category, PostReaction, Reaction
+from datetime import date
+
+>>>>>>> main
 
 class Posts(ViewSet):
     """Posts"""
@@ -27,10 +34,14 @@ class Posts(ViewSet):
         post = Post()
         post.user = user
         post.title = request.data["title"]
-        post.publication_date = request.data["publicationDate"]
+        post.publication_date = date.today()
         post.image_url = request.data["imageUrl"]
         post.content = request.data["content"]
-        post.approved = request.data["approved"]
+        
+        if user.user.is_staff:
+            post.approved = True
+        else:
+            post.approved = False
 
         # Use the Django ORM to get the record from the database
         # whose `id` is what the client passed as the
@@ -143,6 +154,12 @@ class Posts(ViewSet):
         category = self.request.query_params.get('category', None)
         if category is not None:
             posts = posts.filter(category__id=category)
+            
+        user = RareUser.objects.get(user=request.auth.user)
+        active = self.request.query_params.get('active', None)
+
+        if active is not None:
+            posts = posts.filter(user__id=user.id)
 
         user = self.request.query_params.get('user', None)
         if user is not None:

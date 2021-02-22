@@ -9,7 +9,7 @@
             "first_name": "Steve",
             "last_name": "Brownlee",
             "email": "me@me.com",
-            "is_staff": false,
+            "is_staff": true,
             "is_active": true,
             "date_joined": "2011-09-01T13:20:30+03:00"
         }
