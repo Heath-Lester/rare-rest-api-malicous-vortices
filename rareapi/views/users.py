@@ -19,6 +19,29 @@ class Users(ViewSet):
         Returns:
             Response -- JSON serialized User instance
         """
+        try:
+            # `pk` is a parameter to this function, and
+            # Django parses it from the URL route parameter
+            #   http://localhost:8000/Users/2
+            #
+            # The `2` at the end of the route becomes `pk`
+            post = Post.objects.get(pk=pk)
+            associated_tags = Tag.objects.filter(related_post__post=post)
+            print(associated_tags)
+
+            all_tags = serializer = TagSerializer(
+                associated_tags, many=True, context={'request', request})
+            my_post = serializer = PostSerializer(
+                post, context={'request': request})
+
+            single_post = {}
+            single_post['post'] = my_post.data
+            single_post['tags'] = all_tags.data
+            # post['all_tags']=all_tags.data
+            print(single_post)
+            return Response(single_post)
+        except Exception as ex:
+            return HttpResponseServerError(ex)
 
     def update(self, request, pk=None):
         """Handle PUT requests for a User
