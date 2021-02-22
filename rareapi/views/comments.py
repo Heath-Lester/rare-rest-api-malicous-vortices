@@ -52,7 +52,7 @@ class Comments(ViewSet):
         comment.save()
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
-
+        
 
     def destroy(self, request, pk=None):
 
