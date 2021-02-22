@@ -88,5 +88,14 @@
             "post": 1,
             "reaction": 1
         }
+    },
+    {
+        "model": "rareapi.postreaction",
+        "pk": 11,
+        "fields": {
+            "user": 2,
+            "post": 1,
+            "reaction": 3
+        }
     }
 ]
