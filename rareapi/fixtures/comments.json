@@ -18,5 +18,25 @@
             "content": "I couldn't finish this post",
             "created_on": "2021-03-16"
         }
+    },
+    {
+        "model": "rareapi.comment",
+        "pk": 3,
+        "fields": {
+            "post": 4,
+            "author": 2,
+            "content": "I couldn't finish this post",
+            "created_on": "2021-03-16"
+        }
+    },
+    {
+        "model": "rareapi.comment",
+        "pk": 4,
+        "fields": {
+            "post": 4,
+            "author": 3,
+            "content": "Comment, comment, comment.",
+            "created_on": "2021-03-16"
+        }
     }
 ]

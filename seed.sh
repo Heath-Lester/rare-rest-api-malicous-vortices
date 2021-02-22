@@ -1,4 +1,5 @@
 #!/bin/bash
+git rm -rf --cached db.sqlite3   
 rm -rf rareapi/migrations
 rm db.sqlite3
 python3 manage.py migrate
