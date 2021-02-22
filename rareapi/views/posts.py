@@ -162,6 +162,30 @@ class Posts(ViewSet):
             posts, many=True, context={'request': request})
         return Response(serializer.data)
 
+
+    @action(methods=['post'], detail=True)
+    def approve(self, request, pk=None):
+
+        if request.method == "POST":
+            post = Post.objects.get(pk=pk)
+            rare_user = RareUser.objects.get(user=request.auth.user)
+            if rare_user.user.is_staff:
+                if post.approved == False:
+                    post.approved = True
+                    post.save()
+                elif post.approved == True:
+                    post.approved = False
+                    post.save()
+                return Response(
+                    {'message': 'Successfully approved/unapproved'},
+                    status=status.HTTP_200_OK
+                    )
+            else:
+                return Response(
+                    {'message': 'Cannot approve request; user is not admin' },
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+
 class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for Posts
     Arguments:
