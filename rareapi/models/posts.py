@@ -1,4 +1,4 @@
-from django.db import models 
+from django.db import models
 
 class Post(models.Model):
 
@@ -9,3 +9,11 @@ class Post(models.Model):
     image_url = models.CharField(max_length=200)
     content = models.CharField(max_length=250)
     approved = models.BooleanField()
+
+    @property
+    def reaction_count(self):
+        return self.__reaction_count
+
+    @reaction_count.setter
+    def reaction_count(self, value):
+        self.__reaction_count = value
