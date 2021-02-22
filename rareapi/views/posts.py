@@ -31,7 +31,11 @@ class Posts(ViewSet):
         post.publication_date = request.data["publicationDate"]
         post.image_url = request.data["imageUrl"]
         post.content = request.data["content"]
-        post.approved = request.data["approved"]
+        
+        if user.user.is_staff:
+            post.approved = True
+        else:
+            post.approved = False
 
         # Use the Django ORM to get the record from the database
         # whose `id` is what the client passed as the
