@@ -65,9 +65,13 @@ class Posts(ViewSet):
             #
             # The `2` at the end of the route becomes `pk`
             post = Post.objects.get(pk=pk)
+            # Gets all reactions and initializes an empty array
             reactions = Reaction.objects.all()
             post.reaction_count=[]
 
+
+            # Loops over queryset of all reactions, and for each one counts how PostReactions exist that correspond both to that post and that reaction.
+            # Then appends the result of that to the reaction_count list as a dictionary with key=reaction.label and value = number_of_reactions 
             for reaction in reactions:
                 number_of_reactions = PostReaction.objects.filter(post=post, reaction=reaction).count()
                 post.reaction_count.append({reaction.label: number_of_reactions})
