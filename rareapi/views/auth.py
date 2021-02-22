@@ -52,7 +52,7 @@ def register_user(request):
         first_name=req_body['first_name'],
         last_name=req_body['last_name'],
         email=req_body['email'],
-        is_staff=True,
+        is_staff=False,
         is_active=True,
         date_joined= datetime.now()
     )

@@ -32,7 +32,11 @@ class Posts(ViewSet):
         post.publication_date = date.today()
         post.image_url = request.data["imageUrl"]
         post.content = request.data["content"]
-        post.approved = request.data["approved"]
+        
+        if user.user.is_staff:
+            post.approved = True
+        else:
+            post.approved = False
 
         # Use the Django ORM to get the record from the database
         # whose `id` is what the client passed as the
@@ -158,6 +162,30 @@ class Posts(ViewSet):
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
         return Response(serializer.data)
+
+
+    @action(methods=['post'], detail=True)
+    def approve(self, request, pk=None):
+
+        if request.method == "POST":
+            post = Post.objects.get(pk=pk)
+            rare_user = RareUser.objects.get(user=request.auth.user)
+            if rare_user.user.is_staff:
+                if post.approved == False:
+                    post.approved = True
+                    post.save()
+                elif post.approved == True:
+                    post.approved = False
+                    post.save()
+                return Response(
+                    {'message': 'Successfully approved/unapproved'},
+                    status=status.HTTP_200_OK
+                    )
+            else:
+                return Response(
+                    {'message': 'Cannot approve request; user is not admin' },
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
 
 class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for Posts
