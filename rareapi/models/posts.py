@@ -7,7 +7,7 @@ class Post(models.Model):
     title = models.CharField(max_length=50)
     publication_date = models.DateTimeField(auto_now=False, auto_now_add=False)
     image_url = models.CharField(max_length=200)
-    content = models.CharField(max_length=250)
+    content = models.CharField(max_length=2500)
     approved = models.BooleanField()
 
     @property
