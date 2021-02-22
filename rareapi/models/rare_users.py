@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from rareapi.models.subscriptions import Subscription
 
 
 class RareUser(models.Model):
@@ -8,3 +9,10 @@ class RareUser(models.Model):
     profile_image_url = models.CharField(max_length=200)
     created_on = models.DateTimeField()
     active = models.BooleanField()
+
+    @property
+    def subscriptions(self):
+        subs = Subscription.objects.filter(follower=self)
+        return subs
+
+    
