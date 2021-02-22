@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from rareapi.models import Post, RareUser, Category, PostReaction, Reaction
+from datetime import date
 
 
 class Posts(ViewSet):
@@ -28,7 +29,7 @@ class Posts(ViewSet):
         post = Post()
         post.user = user
         post.title = request.data["title"]
-        post.publication_date = request.data["publicationDate"]
+        post.publication_date = date.today()
         post.image_url = request.data["imageUrl"]
         post.content = request.data["content"]
         
