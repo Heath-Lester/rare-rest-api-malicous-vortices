@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
+from django.contrib.auth.models import User
 from rareapi.models import Post, RareUser, Category, Tag, PostTag, PostReaction, Reaction
 from rest_framework.decorators import action
 from datetime import date
@@ -72,7 +73,7 @@ class Posts(ViewSet):
             # The `2` at the end of the route becomes `pk`
             post = Post.objects.get(pk=pk)
             associated_tags=Tag.objects.filter(related_post__post=post)
-            print(associated_tags)
+            user = RareUser.objects.get(user=request.auth.user)
 
             all_tags=serializer=TagSerializer(associated_tags, many=True, context={'request',request})
             my_post=serializer = PostSerializer(post, context={'request': request})
@@ -80,8 +81,9 @@ class Posts(ViewSet):
             single_post={}
             single_post['post']=my_post.data
             single_post['tags']=all_tags.data
-            # post['all_tags']=all_tags.data
-            print(single_post)
+            if user == post.user:
+                single_post['myPosts']=True 
+
             return Response(single_post)
         except Exception as ex:
             return HttpResponseServerError(ex)
@@ -215,7 +217,25 @@ class Posts(ViewSet):
                 )
         return Response({}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+class UserSerializer(serializers.ModelSerializer):
+    """JSON serializer for Users
+    Arguments:
+        serializer type
+    """
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'is_staff')
+class RareUserSerializer(serializers.ModelSerializer):
+    """JSON serializer for RareUsers
+    Arguments:
+        serializer type
+    """
+    user = UserSerializer(many=False)
 
+    class Meta:
+        model = RareUser
+        fields = ('id', 'user', 'bio', 'active')
+        depth = 1
 class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -223,6 +243,7 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ( 'id', 'label' )
 
 class PostSerializer(serializers.ModelSerializer):
+    user = RareUserSerializer(many=False)
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
