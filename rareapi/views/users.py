@@ -98,6 +98,13 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'first_name', 'last_name', 'is_staff')
 
+class SubscriptionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Subscription
+        fields = ('author', 'created_on', 'ended_on')
+        depth = 1
+
 
 class RareUserSerializer(serializers.ModelSerializer):
     """JSON serializer for RareUsers
@@ -105,8 +112,9 @@ class RareUserSerializer(serializers.ModelSerializer):
         serializer type
     """
     user = UserSerializer(many=False)
+    subscriptions = SubscriptionSerializer(many=True)
 
     class Meta:
         model = RareUser
-        fields = ('id', 'user', 'bio', 'active')
+        fields = ('id', 'user', 'bio', 'active', 'subscriptions')
         depth = 1
