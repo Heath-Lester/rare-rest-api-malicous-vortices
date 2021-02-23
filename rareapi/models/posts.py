@@ -1,4 +1,5 @@
 from django.db import models
+from .rare_users import RareUser
 
 class Post(models.Model):
 
@@ -11,8 +12,22 @@ class Post(models.Model):
     approved = models.BooleanField()
 
     @property
+    def my_post(self):
+        return self.__my_post
+
+    @my_post.setter
+    def my_post(self, value):
+        self.__my_post = value
+
+    @property
     def related_tags(self):
         return self.__related_tags
+
+    @property
+    def author(self):
+        author = RareUser.object.get(pk=self.user__id)
+        return author
+    
 
     @related_tags.setter
     def related_tags(self, value):
