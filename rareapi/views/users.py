@@ -21,11 +21,14 @@ class Users(ViewSet):
         Returns:
             Response -- JSON serialized User instance
         """
-        
+        if pk == None:
+            rare_user = RareUser.objects.get(user=request.auth.user)
 
-        rare_user = RareUser.objects.get(pk=pk)
+        else:
+            rare_user = RareUser.objects.get(pk=pk)
 
-        serializer = RareUserSerializer(rare_user, context={'request': request})
+        serializer = RareUserSerializer(
+            rare_user, context={'request': request})
         return Response(serializer.data)
 
     def update(self, request, pk=None):
@@ -33,7 +36,7 @@ class Users(ViewSet):
         Returns:
             Response -- Empty body with 204 status code
         """
-    
+
     def patch(self, request, pk=None):
         """Handle PATCH requests for a User
         Returns:
@@ -82,17 +85,18 @@ class Users(ViewSet):
             if author == follower:
                 return Response({'message': 'User cannot subscribe to themselves'}, status=status.HTTP_400_BAD_REQUEST)
             try:
-                subscription = Subscription.objects.get(author=author, follower=follower)
+                subscription = Subscription.objects.get(
+                    author=author, follower=follower)
                 if subscription.ended_on:
                     subscription.created_on = datetime.now()
                     subscription.ended_on = None
                     subscription.save()
-                    return Response({'message' : 'Subscription Renewed'}, status=status.HTTP_204_NO_CONTENT)
+                    return Response({'message': 'Subscription Renewed'}, status=status.HTTP_204_NO_CONTENT)
                 else:
                     subscription.ended_on = datetime.now()
                     subscription.save()
-                    return Response({'message' : 'Subscription Ended'}, status=status.HTTP_204_NO_CONTENT)
-            except Subscription.DoesNotExist: 
+                    return Response({'message': 'Subscription Ended'}, status=status.HTTP_204_NO_CONTENT)
+            except Subscription.DoesNotExist:
                 subscription = Subscription()
                 subscription.author = author
                 subscription.follower = follower
@@ -101,6 +105,32 @@ class Users(ViewSet):
 
                 return Response({}, status=status.HTTP_201_CREATED)
 
+    @action(methods=['post'], detail=True)
+    def admin(self, request, pk=None):
+
+        if request.method == "POST":
+            if request.auth.user.is_staff:
+                admin_count = User.objects.filter(is_staff=True).count()
+
+                rare_user_target = RareUser.objects.get(pk=pk)
+                if rare_user_target.user.is_staff:
+                    if admin_count > 1 or request.auth.user != rare_user_target.user:
+                        target_user = rare_user_target.user
+                        target_user.is_staff = False
+                        target_user.save()
+                        return Response({'message': 'Admin rights revoked'}, status=status.HTTP_204_NO_CONTENT)
+                    else:
+                        return Response({'message': 'You may not remove the final admin!'}, status=status.HTTP_403_FORBIDDEN)
+                else:
+                    target_user = rare_user_target.user
+                    target_user.is_staff = True
+                    target_user.save()
+                    return Response({'message': 'New admin approved'}, status=status.HTTP_204_NO_CONTENT)
+
+            else:
+                return Response({'message': 'Non-admins may not change user privileges'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
 class UserSerializer(serializers.ModelSerializer):
     """JSON serializer for Users
     Arguments:
@@ -108,7 +138,8 @@ class UserSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'is_staff')
+        fields = ('id', 'first_name', 'last_name', 'is_staff', 'username')
+
 
 class SubscriptionSerializer(serializers.ModelSerializer):
 
@@ -128,5 +159,6 @@ class RareUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RareUser
-        fields = ('id', 'user', 'bio', 'active', 'subscriptions')
+        fields = ('id', 'user', 'bio', 'active',
+                  'subscriptions', 'profile_image_url')
         depth = 1
