@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from django.contrib.auth.models import User
-from rareapi.models import Post, RareUser, Category, Tag, PostTag, PostReaction, Reaction
+from rareapi.models import Post, RareUser, Category, Tag, PostTag, PostReaction, Reaction, Subscription
 from rest_framework.decorators import action
 from datetime import date
 
@@ -148,6 +148,7 @@ class Posts(ViewSet):
         #    http://localhost:8000/Posts?type=1
         #
         # That URL will retrieve all tabletop Posts
+        
 
         category = self.request.query_params.get('category', None)
         if category is not None:
@@ -158,16 +159,21 @@ class Posts(ViewSet):
 
         if active is not None:
             posts = posts.filter(user__id=user.id)
+            
 
         users = self.request.query_params.get('user', None)
         if users is not None:
-             posts = posts.filter(user__id=user)
+            posts = posts.filter(user__id=user)
+            
 
         title = self.request.query_params.get('title', None)
         if title is not None:
             posts = posts.filter(title__contains=title)
 
-
+        # subscribers=Subscription.objects.filter(follower=user.id)
+        # for subscriber in subscribers:
+        #     subscriptionPosts=posts.filter(user=subscriber.author)
+        #     posts.append(subscriptionPosts)
 
         for post in posts:
             if post.user == user:
