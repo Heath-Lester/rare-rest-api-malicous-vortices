@@ -159,16 +159,27 @@ class Posts(ViewSet):
         if active is not None:
             posts = posts.filter(user__id=user.id)
 
-        user = self.request.query_params.get('user', None)
-        if user is not None:
-            posts = posts.filter(user__id=user)
+        users = self.request.query_params.get('user', None)
+        if users is not None:
+             posts = posts.filter(user__id=user)
 
         title = self.request.query_params.get('title', None)
         if title is not None:
             posts = posts.filter(title__contains=title)
 
+
+
+        for post in posts:
+            if post.user == user:
+                post.my_post =True
+            else:
+                post.my_post =False
+
+            
+
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
+
         return Response(serializer.data)
 
 
@@ -247,5 +258,5 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
-                  'image_url', 'content', 'approved',"related_post" )
+                  'image_url', 'content', 'approved',"related_post", "my_post" )
         depth = 1
