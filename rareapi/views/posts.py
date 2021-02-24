@@ -104,6 +104,17 @@ class Posts(ViewSet):
         except Exception as ex:
             return HttpResponseServerError(ex)
 
+    def patch(self, request, pk=None):
+        """Handle PATCH requests for a Post
+        Returns:
+            Response -- Empty body with 204 status code
+        """
+        post = Post.objects.get(pk=pk)
+        post.approved = request.data['approved']
+        post.save()
+
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
+
     def update(self, request, pk=None):
         """Handle PUT requests for a Post
         Returns:
