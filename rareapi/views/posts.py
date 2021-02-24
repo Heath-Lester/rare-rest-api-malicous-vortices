@@ -156,13 +156,33 @@ class Posts(ViewSet):
             
         user = RareUser.objects.get(user=request.auth.user)
         active = self.request.query_params.get('active', None)
-
+        my_subscriptions=Subscription.objects.filter(follower_id=user.id)
+        print(my_subscriptions)
+        
         if active is not None:
+            print("my post navbar is being clicked")
             posts = posts.filter(user__id=user.id)
-            
+            for subscription in my_subscriptions:
+                if subscription.follower_id=user.id:
+                    post.filter(user__id=subscription['author_id'])
+            # 1)get the posts where the user on the post equals the id on the user
+            # 2)get the subscriptions where the follower on the subscription equals the id on the user
+            # 3)get the posts where the user on the post equals the author in the subscription
 
+            # step 2
+            # my_subscriptions=Subscription.objects.filter(follower__id=user.id)
+
+            # 
+            # for subscription in my_subscriptions:
+            #     subscribed_posts=posts.filter(user__id=subscription['author_id'])
+            #     print(subscribed_posts)
+
+            
+            
+       
         users = self.request.query_params.get('user', None)
         if users is not None:
+            
             posts = posts.filter(user__id=user)
             
 
@@ -251,7 +271,7 @@ class RareUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RareUser
-        fields = ('id', 'user', 'bio', 'active')
+        fields = ('id', 'user', 'bio', 'active', 'rareusers_author')
         depth = 1
 class TagSerializer(serializers.ModelSerializer):
 
