@@ -24,3 +24,5 @@ VALUES (
     'date_joined:datetime',
     'first_name:varchar(150)'
   );
+
+DELETE FROM rareapi_subscription WHERE id=1;
