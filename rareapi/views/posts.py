@@ -65,6 +65,11 @@ class Posts(ViewSet):
         Returns:
             Response -- JSON serialized Post instance
         """
+
+
+        
+
+
         try:
             # `pk` is a parameter to this function, and
             # Django parses it from the URL route parameter
@@ -72,6 +77,13 @@ class Posts(ViewSet):
             #
             # The `2` at the end of the route becomes `pk`
             post = Post.objects.get(pk=pk)
+            reactions = Reaction.objects.all()
+            post.reactions=[]
+
+            for reaction in reactions:
+                number_of_reactions = PostReaction.objects.filter(post=post, reaction=reaction).count()
+                post.reactions.append({reaction.label: number_of_reactions})
+
             associated_tags=Tag.objects.filter(related_post__post=post)
             user = RareUser.objects.get(user=request.auth.user)
 
@@ -291,5 +303,5 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
-                  'image_url', 'content', 'approved',"related_post", "my_post")
+                  'image_url', 'content', 'approved',"related_post", 'reactions', "my_post" )
         depth = 1

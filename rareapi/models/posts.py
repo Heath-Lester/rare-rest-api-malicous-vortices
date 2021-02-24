@@ -32,3 +32,11 @@ class Post(models.Model):
     @related_tags.setter
     def related_tags(self, value):
         self.__related_tags = value
+
+    @property
+    def reactions(self):
+        return self.__reactions
+
+    @reactions.setter
+    def reactions(self, value):
+        self.__reactions = value
