@@ -30,7 +30,7 @@ class Reactions(ViewSet):
         serializer = ReactionSerializer(reactions, many=True, context={'request': request})
         return Response(serializer.data)
 
-    @action(methods=['post', 'delete'], detail=True)
+    @action(methods=['post'], detail=True)
     def react(self, request, pk=None):
 
         if request.method == "POST":
@@ -39,9 +39,10 @@ class Reactions(ViewSet):
             rare_user = RareUser.objects.get(user=request.auth.user)
             try:
                 post_react = PostReaction.objects.get(reaction=reaction, post=post, user=rare_user)
+                post_react.delete()
                 return Response(
-                    {'message': 'Already added this reaction'},
-                    status=status.HTTP_422_UNPROCESSABLE_ENTITY
+                    {'message': 'Delete successful'},
+                    status=status.HTTP_204_NO_CONTENT
                 )
             except PostReaction.DoesNotExist: 
                 post_react = PostReaction()
@@ -51,30 +52,6 @@ class Reactions(ViewSet):
                 post_react.save()
 
                 return Response({}, status=status.HTTP_201_CREATED)
-
-        elif request.method == "DELETE":
-            reaction = Reaction.objects.get(pk=pk)
-            post = Post.objects.get(pk=request.data['post'])
-            rare_user = RareUser.objects.get(user=request.auth.user)
-            try:
-                reaction = Reaction.objects.get(pk=pk)
-            except Reaction.DoesNotExist:
-                return Response(
-                    {'message': 'Reaction does not exist.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            try: 
-                post_react = PostReaction.objects.get(reaction=reaction, post=post, user = rare_user)
-                post_react.delete()
-                return Response(None, status=status.HTTP_204_NO_CONTENT)
-            except PostReaction.DoesNotExist:
-                return Response({'message': 'Reaction not currently set.'},
-                status=status.HTTP_404_NOT_FOUND
-                )
-
-
-        return Response({}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class ReactionSerializer(serializers.ModelSerializer):
 

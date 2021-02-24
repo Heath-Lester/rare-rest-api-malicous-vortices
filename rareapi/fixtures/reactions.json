@@ -4,7 +4,7 @@
         "pk": 1,
         "fields": {
             "label": "Happy",
-            "image_url": "https://unsplash.com/photos/SymZoeE8quA"
+            "image_url": "https://www.pngfind.com/pngs/m/21-215596_smiley-png-transparent-background-smiley-face-png-png.png"
         }
     },
     {
@@ -12,7 +12,7 @@
         "pk": 2,
         "fields": {
             "label": "Content",
-            "image_url": "https://unsplash.com/photos/SymZoeE8quA"
+            "image_url": "https://hotemoji.com/images/dl/5/relieved-face-emoji-by-twitter.png"
         }
     },
     {
@@ -20,7 +20,7 @@
         "pk": 3,
         "fields": {
             "label": "Depressed",
-            "image_url": "https://unsplash.com/photos/SymZoeE8quA"
+            "image_url": "https://img.favpng.com/17/16/25/emotion-emoticon-computer-icons-worry-png-favpng-MJNxqQhDstxPH1LWsftg9Wrzr.jpg"
         }
     },
     {
@@ -28,7 +28,7 @@
         "pk": 4,
         "fields": {
             "label": "Frustrated",
-            "image_url": "https://unsplash.com/photos/SymZoeE8quA"
+            "image_url": "https://www.pinclipart.com/picdir/middle/379-3798813_angry-emoji-clipart-frustration-face-mad-emoji-black.png"
         }
     },
     {
@@ -36,7 +36,7 @@
         "pk": 5,
         "fields": {
             "label": "Curious",
-            "image_url": "https://unsplash.com/photos/SymZoeE8quA"
+            "image_url": "https://www.vhv.rs/dpng/d/590-5905022_iphone-curious-emoji-hd-png-download.png"
         }
     }
 ]
