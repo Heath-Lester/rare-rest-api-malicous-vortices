@@ -76,6 +76,10 @@ class Users(ViewSet):
             #
             # That URL will retrieve all tabletop Users
 
+
+    # Toggles subscription status using custom action matching entries on subscription field to pk/identity of request. 
+    # Does not allow users to subscribe to themselves and toggles a subscription off if they send the same request.
+
     @action(methods=['post'], detail=True)
     def subscribe(self, request, pk=None):
 
@@ -105,6 +109,7 @@ class Users(ViewSet):
 
                 return Response({}, status=status.HTTP_201_CREATED)
 
+    # Toggles admin status for users.  Requires sender be an admin to work and does not allow removal of final admin
     @action(methods=['post'], detail=True)
     def admin(self, request, pk=None):
 

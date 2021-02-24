@@ -23,6 +23,8 @@ class Post(models.Model):
     def related_tags(self):
         return self.__related_tags
 
+
+    # Returns RareUser that matches user id on current post as custom property called author
     @property
     def author(self):
         author = RareUser.object.get(pk=self.user__id)

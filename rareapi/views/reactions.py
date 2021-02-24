@@ -30,6 +30,9 @@ class Reactions(ViewSet):
         serializer = ReactionSerializer(reactions, many=True, context={'request': request})
         return Response(serializer.data)
 
+
+    # Custom action that toggles a post_reaction into/out of being by checking if the post matches criteria sent by client and acting accordingly
+
     @action(methods=['post'], detail=True)
     def react(self, request, pk=None):
 
