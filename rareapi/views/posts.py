@@ -143,6 +143,7 @@ class Posts(ViewSet):
         # Get all Post records from the database
         posts = Post.objects.all()
         
+        
 
         # Support filtering Posts by type
         #    http://localhost:8000/Posts?type=1
@@ -157,28 +158,34 @@ class Posts(ViewSet):
         user = RareUser.objects.get(user=request.auth.user)
         active = self.request.query_params.get('active', None)
         my_subscriptions=Subscription.objects.filter(follower_id=user.id)
-        print(my_subscriptions)
+        # print(my_subscriptions)
         
         if active is not None:
             print("my post navbar is being clicked")
-            posts = posts.filter(user__id=user.id)
-            for subscription in my_subscriptions:
-                if subscription.follower_id=user.id:
-                    post.filter(user__id=subscription['author_id'])
             # 1)get the posts where the user on the post equals the id on the user
+
             # 2)get the subscriptions where the follower on the subscription equals the id on the user
             # 3)get the posts where the user on the post equals the author in the subscription
 
-            # step 2
-            # my_subscriptions=Subscription.objects.filter(follower__id=user.id)
+            home_page_posts=[]
 
-            # 
+            followed_users=RareUser.objects.filter(rareusers_author__follower=user)
+            for  author in followed_users:
+                subscribed_post=list(posts.filter(user=author))
+                home_page_posts=home_page_posts+subscribed_post
+
+            only_my_posts = list(posts.filter(user__id=user.id))
+            home_page_posts=home_page_posts+only_my_posts
+
             # for subscription in my_subscriptions:
-            #     subscribed_posts=posts.filter(user__id=subscription['author_id'])
-            #     print(subscribed_posts)
-
+                
+            #     subscribed_post=posts.filter(user__id=subscription.author_id)
+            #     # my_list.append(subscribed_post)
+            #     # print(subscribed_post)
+            # # my_list.append(only_my_posts)
             
-            
+            posts=home_page_posts
+                   
        
         users = self.request.query_params.get('user', None)
         if users is not None:
@@ -271,7 +278,7 @@ class RareUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RareUser
-        fields = ('id', 'user', 'bio', 'active', 'rareusers_author')
+        fields = ('id', 'user', 'bio', 'active', 'rareusers_follower')
         depth = 1
 class TagSerializer(serializers.ModelSerializer):
 
@@ -284,5 +291,5 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
-                  'image_url', 'content', 'approved',"related_post", "my_post" )
+                  'image_url', 'content', 'approved',"related_post", "my_post")
         depth = 1
