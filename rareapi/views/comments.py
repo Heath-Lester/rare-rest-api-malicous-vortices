@@ -10,7 +10,18 @@ from datetime import date
 
 class Comments(ViewSet):
     def list(self, request):
+
         comments=Comment.objects.all()
+        user = RareUser.objects.get(user=request.auth.user)
+
+        # Set custom property, `my_comment` to True
+        # if the logged in user is the author of the comment
+        for comment in comments:
+            if user == comment.author:
+                    comment.my_comment=True
+            else:
+                comment.my_comment=False
+
         serializer = CommentSerializer(comments, many=True, context= {'request': request})
         return Response(serializer.data)
     
@@ -38,6 +49,15 @@ class Comments(ViewSet):
 
         try:
             comment = Comment.objects.get(pk=pk)
+            user = RareUser.objects.get(user=request.auth.user)
+
+            # Set custom property, `my_comment` to True
+            # if the logged in user is the author of the comment
+            if user == comment.author:
+                comment.my_comment=True
+            else:
+                comment.my_comment=False
+
             serializer = CommentSerializer(comment, context={'request': request})
             return Response(serializer.data)
         except Exception as ex:
@@ -72,5 +92,5 @@ class Comments(ViewSet):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model=Comment
-        fields=('id','post', 'author', 'content', 'created_on')
+        fields=('id','post', 'author', 'content', 'created_on', 'my_comment')
         depth=2
