@@ -10,6 +10,7 @@ class RareUser(models.Model):
     created_on = models.DateTimeField()
     active = models.BooleanField()
 
+    # Returns custom property subscriptions for RareUser where subscriptions follower field=self.
     @property
     def subscriptions(self):
         subs = Subscription.objects.filter(follower=self)

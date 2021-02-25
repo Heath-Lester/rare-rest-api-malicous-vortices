@@ -78,6 +78,10 @@ class Posts(ViewSet):
             # The `2` at the end of the route becomes `pk`
             post = Post.objects.get(pk=pk)
             reactions = Reaction.objects.all()
+
+            # Creates an empty list for reactions custom property set in model, and then filters through postReactions to provide objects with a
+            # key/value pair of reaction label/number of that reaction the post has 
+
             post.reactions=[]
 
             for reaction in reactions:
